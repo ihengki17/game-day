@@ -21,7 +21,7 @@ In this demo, you'll walk through the stages describe in the [Strangler Fig Patt
 The following steps will bring you through the process of "Modernizing" the provided application using Confluent Cloud and `Kafka`. Use the following simple diagram to capture the basic flow (not everything is depicted).
 
 <div align="center">
-    <img src="images/phase-flow.png" width=100% height=100%>
+    <img src="images/Strangler-fig-pattern.png" width=100% height=100%>
 </div>
 
 ### Deploy the "monolith"
