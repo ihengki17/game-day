@@ -1,0 +1,8 @@
+- monolith change into more general not banking only (change db to store) - done
+- change database to remove the account_type and treat card as loyalty card - done
+- automatic dummy webapp produce data - not started
+- microservices change any bank related as general (store) - not started
+- change README card oriented to customer-based oriented - not started
+- ksqlDB change card_number to customer_id - not started
+- change topic produce and read as general topic - not started
+- 

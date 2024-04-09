@@ -26,13 +26,12 @@ CREATE TABLE accounts (
 	account_id VARCHAR(50) PRIMARY KEY,
 	customer_id VARCHAR(50),
 	card_number VARCHAR(50),
-	account_type VARCHAR(25),
 	account_tier VARCHAR(25), 
 	account_standing VARCHAR(25),
 	avg_spend INT
 );
 
-COPY accounts(account_id, customer_id, card_number, account_type, account_tier, account_standing, avg_spend)
+COPY accounts(account_id, customer_id, card_number, account_tier, account_standing, avg_spend)
 FROM '/data/accounts.csv'
 DELIMITER ','
 CSV HEADER;

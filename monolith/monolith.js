@@ -47,7 +47,7 @@ app.post("/balance", (req, res) => {
     client.query("BEGIN", (err) => {
       log("info", "Beginning new transaction", "BEGIN");
       if (abort(err)) return;
-      const query = `SELECT card_number AS card, SUM(transaction_amount) as balance FROM bank.transactions WHERE card_number='${req.body.value.card}' GROUP BY card_number`;
+      const query = `SELECT card_number AS card, SUM(transaction_amount) as balance FROM store.transactions WHERE card_number='${req.body.value.card}' GROUP BY card_number`;
       client.query(query, (err, result) => {
         log("info", "Querying database", query);
         if (abort(err)) return;
@@ -104,8 +104,8 @@ app.post("/transactions", (req, res) => {
       log("info", "Beginning new transaction", "BEGIN");
       if (abort(err)) return;
       const id = uuidv4();
-      //   const query = `INSERT INTO bank.transactions (transaction_id, card_number, transaction_amount, transaction_time) VALUES ('${id}', '${req.body.value.card}', ${req.body.value.amount}, '${date}')`;
-      const query = `INSERT INTO bank.transactions (transaction_id, card_number, transaction_amount, transaction_time) VALUES ('${id}', '${req.body.value.card}', ${req.body.value.amount}, '${isoDateString}')`;
+      //   const query = `INSERT INTO store.transactions (transaction_id, card_number, transaction_amount, transaction_time) VALUES ('${id}', '${req.body.value.card}', ${req.body.value.amount}, '${date}')`;
+      const query = `INSERT INTO store.transactions (transaction_id, card_number, transaction_amount, transaction_time) VALUES ('${id}', '${req.body.value.card}', ${req.body.value.amount}, '${isoDateString}')`;
       client.query(query, (err, result) => {
         log("info", "Inserting new transaction.", query);
         if (abort(err)) return;
