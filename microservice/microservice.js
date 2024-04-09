@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 const options = {
-  topic: "express.bank.transactions",
+  topic: "store.transactions",
   clients: {
     "bootstrap.servers": process.env.BOOTSTRAP_SERVERS,
     "sasl.username": process.env.SASL_USERNAME,

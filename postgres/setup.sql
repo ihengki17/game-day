@@ -1,5 +1,5 @@
-CREATE SCHEMA bank;
-SET search_path to bank;
+CREATE SCHEMA store;
+SET search_path to store;
 
 CREATE EXTENSION postgis;
 
