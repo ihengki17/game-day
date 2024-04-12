@@ -179,3 +179,130 @@ Since the data from our nodejs "microservice" won't have a schema (the `node-rdk
    ```sql
    SELECT * FROM jdbc_transactions EMIT CHANGES;
    ```
+
+## Building Fraud Detection (Bonus Stage)
+
+Now that you have set your data in motion with Confluent Cloud, you can build real-time applications which would have been impossible before. For example, in order to be able to detect an unusual activity on a customer's Credit Card we need to have real-time access to transactions and each customer's spending habits. Let's leverage the Detect Unusual Credit Card Activity [recipe](https://developer.confluent.io/tutorials/credit-card-activity/confluent.html) to build this capability with Confluent Cloud and `ksqlDB`.
+
+1. Create customer stream from `postgres.customers`.
+
+   ```sql
+   CREATE STREAM fd_cust_raw_stream WITH (KAFKA_TOPIC = 'postgres.customers',VALUE_FORMAT = 'AVRO', KEY_FORMAT ='JSON');
+   ```
+
+1. Verify the `fd_cust_raw_stream` stream is populated correctly and then hit **Stop**.
+
+   ```sql
+   SELECT * FROM fd_cust_raw_stream EMIT CHANGES;
+   ```
+
+1. Create customer table from `fd_cust_raw_stream` which will hold the latest information for each customer.
+   ```sql
+   CREATE TABLE fd_customers WITH (FORMAT='AVRO') AS
+    SELECT customer_id AS customer_id,
+        LATEST_BY_OFFSET(first_name) AS first_name,
+        LATEST_BY_OFFSET(last_name) AS last_name,
+        LATEST_BY_OFFSET(phone_number) AS phone_number,
+        LATEST_BY_OFFSET(email_address) AS email_address
+    FROM fd_cust_raw_stream
+    GROUP BY customer_id;
+   ```
+1. Verify the `fd_customers` table is populated correctly.
+   ```sql
+   SELECT * FROM fd_customers;
+   ```
+1. Create account stream from `postgres.accounts`.
+   ```sql
+   CREATE STREAM fd_acct_raw_stream WITH (KAFKA_TOPIC = 'postgres.accounts',VALUE_FORMAT = 'AVRO', KEY_FORMAT ='JSON');
+   ```
+1. Verify the `fd_acct_raw_stream` stream is populated correctly and then hit **Stop**.
+   ```sql
+   SELECT * FROM fd_acct_raw_stream EMIT CHANGES;
+   ```
+1. Create account table from `fd_acct_raw_stream` which will hold the latest information for each account.
+   ```sql
+   CREATE TABLE fd_accounts WITH (FORMAT='AVRO') AS
+    SELECT card_number AS card_number,
+        LATEST_BY_OFFSET(account_id) AS account_id,
+        LATEST_BY_OFFSET(customer_id) AS customer_id,
+        LATEST_BY_OFFSET(avg_spend) AS avg_spend
+    FROM fd_acct_raw_stream
+    GROUP BY card_number;
+   ```
+1. Verify the `fd_accounts` table is populated correctly.
+   ```sql
+   SELECT * FROM fd_accounts;
+   ```
+1. Now, we need to join `fd_accounts` and `fd_customers` tables so we know what is the average spent for each customer.
+   ```sql
+   CREATE TABLE fd_cust_acct WITH (KAFKA_TOPIC = 'FD_customer_account', KEY_FORMAT='JSON',VALUE_FORMAT='AVRO') AS
+   SELECT
+      C.CUSTOMER_ID AS CUSTOMER_ID,
+      C.FIRST_NAME + ' ' + C.LAST_NAME AS FULL_NAME,
+      C.PHONE_NUMBER,
+      C.EMAIL_ADDRESS,
+      A.ACCOUNT_ID,
+      A.CARD_NUMBER,
+      A.AVG_SPEND
+   FROM fd_accounts A
+   INNER JOIN fd_customers C
+   ON A.CUSTOMER_ID = C.CUSTOMER_ID;
+   ```
+1. Verify the `fd_cust_acct` table is populated correctly.
+   ```sql
+    SELECT * FROM fd_cust_acct;
+   ```
+1. We need to rekey the `jdbc_transactions` so the `card_number` is the primary key.
+   ```sql
+   CREATE STREAM jdbc_transactions_rekeyed
+   WITH (KAFKA_TOPIC='jdbc_transactions_rekeyed',PARTITIONS=6, REPLICAS=3, VALUE_FORMAT='AVRO') AS
+      SELECT `card_number` as card_number, `transaction_id` as transaction_id, `transaction_amount` as transaction_amount, `transaction_time` as transaction_time
+      FROM jdbc_bank_transactions
+      PARTITION BY `card_number`
+   EMIT CHANGES;
+   ```
+1. Verify the `jdbc_transactions_rekeyed` stream is populated correctly and then hit **Stop**.
+   ```sql
+    SELECT * FROM jdbc_transactions_rekeyed EMIT CHANGES;
+   ```
+1. Now, we can join each transaction that is posted with customer's information and enrich our data.
+
+   ```sql
+   CREATE STREAM fd_transactions_enriched WITH (KAFKA_TOPIC = 'transactions_enriched' , KEY_FORMAT = 'JSON', VALUE_FORMAT='AVRO') AS
+    SELECT
+        T.CARD_NUMBER AS CARD_NUMBER,
+        T.TRANSACTION_ID,
+        T.TRANSACTION_AMOUNT,
+        T.TRANSACTION_TIME,
+        C.FULL_NAME,
+        C.PHONE_NUMBER,
+        C.EMAIL_ADDRESS,
+        C.AVG_SPEND
+    FROM jdbc_bank_transactions_rekeyed T
+    INNER JOIN fd_cust_acct C
+    ON C.CARD_NUMBER = T.CARD_NUMBER;
+   ```
+
+1. Finally, we can aggregate the stream of transactions for each account ID using a two-hour tumbling window, and filter for accounts in which the total spend in a two-hour period is greater than the customer’s average:
+   ```sql
+   CREATE TABLE fd_possible_stolen_card WITH (KAFKA_TOPIC = 'FD_possible_stolen_card', KEY_FORMAT = 'JSON', VALUE_FORMAT='JSON') AS
+   SELECT
+      TIMESTAMPTOSTRING(WINDOWSTART, 'yyyy-MM-dd HH:mm:ss') AS WINDOW_START,
+      T.TRANSACTION_TIME,
+      T.CARD_NUMBER,
+      T.TRANSACTION_AMOUNT,
+      T.FULL_NAME,
+      T.EMAIL_ADDRESS,
+      T.PHONE_NUMBER,
+      SUM(T.TRANSACTION_AMOUNT) AS TOTAL_CREDIT_SPEND,
+      MAX(T.AVG_SPEND) AS AVG_CREDIT_SPEND
+   FROM fd_transactions_enriched T
+   WINDOW TUMBLING (SIZE 2 HOURS)
+   GROUP BY T.CARD_NUMBER, T.TRANSACTION_AMOUNT, T.FULL_NAME, T.EMAIL_ADDRESS, T.PHONE_NUMBER, T.TRANSACTION_TIME
+   HAVING SUM(T.TRANSACTION_AMOUNT) > MAX(T.AVG_SPEND);
+   ```
+
+1. Navigate back to the ksqlDB editor in Confluent Cloud and see which activies have been flaged.
+   ```sql
+    SELECT * FROM fd_possible_stolen_card;
+   ```

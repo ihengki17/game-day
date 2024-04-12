@@ -1,6 +1,8 @@
 - monolith change into more general not banking only (change db to store) - done
 - change database to remove the account_type and treat card as loyalty card - done
 - automatic dummy webapp produce data - not started
+- create scenario for gameday - on-progress
+- create Terraform for build the environment - not started
 - change README and ksqlDB to topic store - on-progress 
 - microservices change any bank related as general (store) - done
 - change topic produce and read as general topic - done
