@@ -10,10 +10,6 @@
 
 In this Workshop we'll be compete each team to get the highest performance to produce the data to Confluent Cluster. The one who could optimize at the best performance of the Kafka Client to Confluent Cluster will be the winner. The Score board will be reflected on Grafana Dashboard to determine the best team. 
 
-<div align="center">
-    <img src="images/diagram-arch.png" width=100% height=100%>
-</div>
-
 ---
 
 ## game-day scenario
@@ -35,7 +31,9 @@ Task:
 
 Please take the API-KEY and API SECRET as your credential to the Confluent Cloud Cluster.
 
+API.txt
 
-<div align="center">
-    <img src="images/Strangler-fig-pattern.png" width=50% height=50%>
-</div>
+```bash
+cc_kafka_cluster_bootsrap = "SASL_SSL://pkc-312o0.ap-southeast-1.aws.confluent.cloud:9092"
+cc_sr_cluster_endpoint = "https://psrc-zy38d.ap-southeast-1.aws.confluent.cloud"
+```

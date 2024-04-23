@@ -53,7 +53,8 @@ class Producer {
       template.send("hengki-avro",formatted_card_number, send_value);
       System.out.println("Sent "+send_value);
       try {
-        Thread.sleep(5000); // Sleep for 5 seconds
+        Thread.sleep(5000); 
+       Sleep for 5 seconds
       } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
       }
