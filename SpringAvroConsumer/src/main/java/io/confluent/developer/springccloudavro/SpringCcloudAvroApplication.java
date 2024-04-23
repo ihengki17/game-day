@@ -18,7 +18,7 @@ public class SpringCcloudAvroApplication {
 @Component
 class Consumer {
 
-  @KafkaListener(topics = {"transaction_avro"}, groupId = "spring-boot-kafka")
+  @KafkaListener(topics = {"hengki-avro"}, groupId = "spring-boot-kafka")
   public void consume(ConsumerRecord<Integer, Transaction> record) {
     System.out.println("received = " + record.value() + " with key " + record.key());
   }

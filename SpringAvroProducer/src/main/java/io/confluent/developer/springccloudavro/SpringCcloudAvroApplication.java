@@ -24,7 +24,7 @@ public class SpringCcloudAvroApplication {
   }
 
   @Bean
-  NewTopic hobbitAvro() {
+  NewTopic newtopicAvro() {
     return TopicBuilder.name("hengki-avro").partitions(6).replicas(3).build();
   }
 }

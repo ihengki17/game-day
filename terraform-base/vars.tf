@@ -10,6 +10,70 @@ resource "random_id" "id" {
   byte_length = 4
 }
 
+resource "random_id" "id1" {
+  byte_length = 4
+}
+
+resource "random_id" "id2" {
+  byte_length = 4
+}
+
+resource "random_id" "id3" {
+  byte_length = 4
+}
+
+resource "random_id" "id4" {
+  byte_length = 4
+}
+
+resource "random_id" "id5" {
+  byte_length = 4
+}
+
+resource "random_id" "id6" {
+  byte_length = 4
+}
+
+resource "random_id" "id7" {
+  byte_length = 4
+}
+
+resource "random_id" "id8" {
+  byte_length = 4
+}
+
+resource "random_id" "id9" {
+  byte_length = 4
+}
+
+resource "random_id" "id10" {
+  byte_length = 4
+}
+
+resource "random_id" "id11" {
+  byte_length = 4
+}
+
+resource "random_id" "id12" {
+  byte_length = 4
+}
+
+resource "random_id" "id13" {
+  byte_length = 4
+}
+
+resource "random_id" "id14" {
+  byte_length = 4
+}
+
+resource "random_id" "id15" {
+  byte_length = 4
+}
+
+resource "random_id" "id16" {
+  byte_length = 4
+}
+
 # ----------------------------------------
 # Generic prefix to use in a common organization
 # ----------------------------------------
