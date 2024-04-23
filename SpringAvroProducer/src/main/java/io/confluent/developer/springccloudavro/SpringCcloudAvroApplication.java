@@ -25,7 +25,7 @@ public class SpringCcloudAvroApplication {
 
   @Bean
   NewTopic newtopicAvro() {
-    return TopicBuilder.name("hengki-avro").partitions(6).replicas(3).build();
+    return TopicBuilder.name("<nama-topic>").partitions(6).replicas(3).build();
   }
 }
 
@@ -50,11 +50,11 @@ class Producer {
       String formatted_card_number = card_number.replaceAll("-", "");
       final String amount = faker.commerce().price();
       Transaction send_value = new Transaction(formatted_cust_id,trans_id,formatted_card_number,amount);
-      template.send("hengki-avro",formatted_card_number, send_value);
+      template.send("<nama topic>",formatted_card_number, send_value);
       System.out.println("Sent "+send_value);
       try {
         Thread.sleep(5000); 
-       Sleep for 5 seconds
+        //Sleep for 5 seconds
       } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
       }
