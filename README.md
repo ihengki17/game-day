@@ -31,7 +31,9 @@ Task:
 
 Please take the API-KEY and API SECRET as your credential to the Confluent Cloud Cluster.
 
+```bash
 API.txt
+```
 
 ```bash
 cc_kafka_cluster_bootsrap = "SASL_SSL://pkc-312o0.ap-southeast-1.aws.confluent.cloud:9092"
