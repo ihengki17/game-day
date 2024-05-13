@@ -6,71 +6,7 @@ locals {
 # This 'random_id_4' will make whatever you create (names, etc)
 # unique in your account.
 # --------------------------------------------------------
-resource "random_id" "id" {
-  byte_length = 4
-}
-
 resource "random_id" "id1" {
-  byte_length = 4
-}
-
-resource "random_id" "id2" {
-  byte_length = 4
-}
-
-resource "random_id" "id3" {
-  byte_length = 4
-}
-
-resource "random_id" "id4" {
-  byte_length = 4
-}
-
-resource "random_id" "id5" {
-  byte_length = 4
-}
-
-resource "random_id" "id6" {
-  byte_length = 4
-}
-
-resource "random_id" "id7" {
-  byte_length = 4
-}
-
-resource "random_id" "id8" {
-  byte_length = 4
-}
-
-resource "random_id" "id9" {
-  byte_length = 4
-}
-
-resource "random_id" "id10" {
-  byte_length = 4
-}
-
-resource "random_id" "id11" {
-  byte_length = 4
-}
-
-resource "random_id" "id12" {
-  byte_length = 4
-}
-
-resource "random_id" "id13" {
-  byte_length = 4
-}
-
-resource "random_id" "id14" {
-  byte_length = 4
-}
-
-resource "random_id" "id15" {
-  byte_length = 4
-}
-
-resource "random_id" "id16" {
   byte_length = 4
 }
 
@@ -104,7 +40,7 @@ variable "cc_cloud_provider" {
 
 variable "cc_cloud_region" {
   type    = string
-  default = "ap-southeast-1"
+  default = "ap-southeast-2"
 }
 
 variable "cc_env_name" {
@@ -132,7 +68,7 @@ variable "sr_cloud_provider" {
 
 variable "sr_cloud_region" {
   type    = string
-  default = "ap-southeast-1"
+  default = "ap-southeast-2"
 }
 
 variable "sr_package" {

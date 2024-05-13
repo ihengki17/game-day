@@ -36,6 +36,6 @@ API.txt
 ```
 
 ```bash
-cc_kafka_cluster_bootsrap = "SASL_SSL://pkc-312o0.ap-southeast-1.aws.confluent.cloud:9092"
-cc_sr_cluster_endpoint = "https://psrc-zy38d.ap-southeast-1.aws.confluent.cloud"
+cc_kafka_cluster_bootsrap = "SASL_SSL://pkc-v72qjj.ap-southeast-2.aws.confluent.cloud:9092"
+cc_sr_cluster_endpoint = "https://psrc-10wzj.ap-southeast-2.aws.confluent.cloud"
 ```
